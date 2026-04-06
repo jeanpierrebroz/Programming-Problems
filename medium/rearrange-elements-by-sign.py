@@ -11,7 +11,7 @@ class Solution:
             else:
                 negDeq.append(num)
 
-        
+            
         n = len(nums)
 
         for i in range(0, n, 2):
