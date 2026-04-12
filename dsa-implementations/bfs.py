@@ -21,10 +21,14 @@ def bfs(node: GraphNode):
     while q:
         curr_node = q.popleft()
         
-        if curr_node not in seen:
-            seen.add(curr_node)
-            q.extend([n for n in curr_node.neighbors if n not in seen])
-            result.append(curr_node.val)
+        seen.add(curr_node)
+        
+        for neighbor in curr_node.neighbors:
+            if neighbor not in seen:
+                seen.add(neighbor)
+                q.append(neighbor)
+                
+        result.append(curr_node.val)
 
     
     return result
