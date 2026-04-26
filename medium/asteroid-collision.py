@@ -1,19 +1,25 @@
 class Solution:
-    def asteroidCollision(self, asteroids: list[int]) -> list[int]:
-        #O(n) time and space
+    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+        #monotonic stack
         stack = []
-        
-        for ast in asteroids:
-            while stack and ast < 0 < stack[-1]:
-                if stack[-1] < -ast:
+
+        #while the sign is different: peek top, if top > curr then curr loses, otherwise keep going
+        #answer should just be the stack at the end
+
+        for num in asteroids:
+            destroyed = False
+            while stack and stack[-1] > 0 and num < 0:
+                if stack[-1] < abs(num):
                     stack.pop()
                     continue
-                elif stack[-1] == -ast:
+                elif stack[-1] == abs(num):
                     stack.pop()
-                    break
+                    destroyed = True
                 else:
-                    break
-            else:
-                stack.append(ast)
-                
+                    destroyed = True
+                break
+            
+            if not destroyed:
+                stack.append(num)
+
         return stack
