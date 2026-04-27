@@ -1,43 +1,31 @@
 class Solution:
     def swimInWater(self, grid: List[List[int]]) -> int:
+        #(cost, row, col)
+        min_heap = [(grid[0][0], 0, 0)]
 
-        class GridPoint:
-            def __init__(self, r, c, curr_max):
-                self.row = r
-                self.col = c
-                self.curr_max = curr_max
+        def getValidNeighbors(row, col):
+            directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+            neighbors = []
+            for d in directions:
+                newRow, newCol = row + d[0], col + d[1]
+                if 0 <= newRow < len(grid) and 0 <= newCol < len(grid):
+                    neighbors.append((grid[newRow][newCol], newRow, newCol))
+            
+            return neighbors
 
-            def __lt__(self, other):
-                return self.curr_max < other.curr_max
+        visited = set() 
 
-            def getNeighbors(self, n):
-                directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
-                neighbors = []
-                for dr, dc in directions:
-                    nr, nc = self.row + dr, self.col + dc
-                    if 0 <= nr < n and 0 <= nc < n:
-                        neighbors.append((nr, nc))
-                return neighbors
+        while min_heap:
+            cost, row, col = heapq.heappop(min_heap)
+            if row == col == len(grid) - 1:
+                return cost
 
-        heap = [GridPoint(0, 0, grid[0][0])]
-        n = len(grid)
-        visited = set()
-        visited.add((0, 0))
+            neighbors = getValidNeighbors(row, col)
 
-        if len(grid[0]) == 1:
-            return 0
-
-        while heap:
-            curr = heapq.heappop(heap)
-            row, column, curr_max = curr.row, curr.col, curr.curr_max
-
-            if row == n - 1 and column == n - 1:
-                return curr_max
-
-            for nextrow, nextcolumn in curr.getNeighbors(n):
-                if (nextrow, nextcolumn) not in visited:
-                    visited.add((nextrow, nextcolumn))
-                    next_max = max(curr_max, grid[nextrow][nextcolumn])
-                    heapq.heappush(heap, GridPoint(nextrow, nextcolumn, next_max))
-
-        return grid_heights[0][0]
+            for neighbor in neighbors:
+          
+                if (neighbor[1], neighbor[2]) not in visited:
+                    visited.add((neighbor[1], neighbor[2]))
+                    heapq.heappush(min_heap, (max(neighbor[0], cost), neighbor[1], neighbor[2]))
+        
+        return grid[0][0]
